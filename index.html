@@ -119,20 +119,26 @@
 
         .header-badge {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.25rem;
+            padding: 0.5rem 1.25rem;
             background: linear-gradient(135deg, var(--color-coral), var(--color-coral-dark));
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
+            border-radius: 12px;
             color: white;
             box-shadow: 0 4px 15px rgba(232, 115, 74, 0.3);
         }
 
-        .header-badge::before {
+        .header-badge-top {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .header-badge-top::before {
             content: '';
             width: 6px;
             height: 6px;
@@ -141,29 +147,11 @@
             animation: pulse 2s ease-in-out infinite;
         }
 
-        .header-timer {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .timer-display {
+        .header-badge-timer {
             font-family: 'SF Mono', Monaco, monospace;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--color-coral);
-            background: white;
-            padding: 0.4rem 0.75rem;
-            border-radius: 8px;
-            min-width: 70px;
-            text-align: center;
-        }
-
-        .timer-label {
-            font-size: 0.7rem;
-            color: var(--color-text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            margin-top: 2px;
         }
 
         @keyframes pulse {
@@ -284,8 +272,6 @@
                 top: 10px;
                 right: 10px;
             }
-        }
-            background: rgba(232, 115, 74, 0.9);
         }
 
         .hero-content {
@@ -944,20 +930,38 @@
             border: 1px solid var(--color-border);
             border-radius: 20px;
             padding: 1.5rem;
-            min-height: 650px;
-            overflow: hidden;
+            min-height: 700px;
+            overflow: visible;
             width: 100%;
             max-width: 100%;
         }
 
         .booking-widget .iclosed-widget {
             border-radius: 12px;
-            overflow: hidden;
+            overflow: visible;
+            min-height: 650px;
         }
 
         .booking-widget iframe {
             width: 100% !important;
             max-width: 100% !important;
+            min-height: 650px !important;
+        }
+
+        /* Medium screens (laptops 13-15") */
+        @media (max-width: 1200px) and (min-width: 769px) {
+            .booking-widget {
+                min-height: 720px;
+                padding: 1rem;
+            }
+            
+            .booking-widget .iclosed-widget {
+                min-height: 680px;
+            }
+            
+            .booking-content {
+                gap: 2rem;
+            }
         }
 
         /* Responsive */
@@ -992,19 +996,16 @@
                 max-width: 500px;
             }
 
-            .header-timer {
-                gap: 0.5rem;
-            }
-
-            .timer-display {
-                font-size: 0.85rem;
-                padding: 0.3rem 0.5rem;
-                min-width: 55px;
-            }
-
             .header-badge {
-                padding: 0.4rem 0.75rem;
-                font-size: 0.65rem;
+                padding: 0.4rem 1rem;
+            }
+            
+            .header-badge-top {
+                font-size: 0.6rem;
+            }
+            
+            .header-badge-timer {
+                font-size: 0.95rem;
             }
         }
 
@@ -1353,15 +1354,29 @@
         /* Responsive */
         @media (max-width: 768px) {
             .header {
-                padding: 1rem 1.5rem;
+                padding: 0.75rem 1rem;
             }
 
             .header-badge {
-                display: none;
+                padding: 0.35rem 0.75rem;
+            }
+            
+            .header-badge-top {
+                font-size: 0.55rem;
+                gap: 0.3rem;
+            }
+            
+            .header-badge-top::before {
+                width: 5px;
+                height: 5px;
+            }
+            
+            .header-badge-timer {
+                font-size: 0.85rem;
             }
 
             .logo img {
-                height: 40px;
+                height: 35px;
             }
 
             .hero {
@@ -1435,6 +1450,8 @@
             }
         }
     </style>
+<!-- Vimeo Player API -->
+    <script src="https://player.vimeo.com/api/player.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -1442,14 +1459,9 @@
         <div class="logo">
             <img src="logo.png" alt="Neoabita">
         </div>
-        <div class="header-timer">
-            <div class="header-badge">
-                Offre Limitée
-            </div>
-            <div>
-                <div class="timer-display" id="countdownTimer">10:00</div>
-                <div class="timer-label">Temps restant</div>
-            </div>
+        <div class="header-badge">
+            <div class="header-badge-top">Offre Limitée</div>
+            <div class="header-badge-timer" id="countdownTimer">10:00</div>
         </div>
     </header>
 
@@ -1501,7 +1513,7 @@
             
             <!-- Video Controls Overlay -->
             <div class="video-controls-overlay" id="videoControlsOverlay">
-                <button class="video-control-btn video-control-sound" id="soundBtn">🔊 Son</button>
+                <button class="video-control-btn video-control-sound" id="soundBtn">🔇 Activer le son</button>
                 <span class="video-control-btn video-control-time" id="timeDisplay">00:00</span>
             </div>
         </div>
@@ -1658,7 +1670,7 @@
 
             <div class="booking-widget">
                 <!-- iClosed inline widget begin -->
-                <div class="iclosed-widget" data-url="https://app.iclosed.io/e/neoabita/offre-plan-3d" title="OFFRE PLAN 3D OFFERTS" style="width: 100%; height: 620px"></div>
+                <div class="iclosed-widget" data-url="https://app.iclosed.io/e/neoabita/offre-plan-3d" title="OFFRE PLAN 3D OFFERTS" style="width: 100%; height: 680px"></div>
                 <script type="text/javascript" src="https://app.iclosed.io/assets/widget.js" async></script>
                 <!-- iClosed inline widget end -->
             </div>
@@ -1965,10 +1977,11 @@
             videoThumbnail.style.display = 'none';
             document.querySelector('.video-overlay-gradient').style.display = 'none';
             
+            // Vimeo avec loop, sans contrôles, muted pour autoplay
             videoContainer.innerHTML = `
                 <iframe 
                     id="vimeoPlayer"
-                    src="https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?autoplay=1&title=0&byline=0&portrait=0" 
+                    src="https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?autoplay=1&loop=1&muted=1&title=0&byline=0&portrait=0&controls=0&background=0" 
                     frameborder="0" 
                     allow="autoplay; fullscreen; picture-in-picture" 
                     allowfullscreen
@@ -1984,6 +1997,9 @@
             // Show CTA buttons under video
             document.getElementById('videoCTAButtons').classList.add('visible');
             
+            // Initialize Vimeo Player API
+            initVimeoPlayer();
+            
             // Collapse hero after 1 second
             setTimeout(() => {
                 document.querySelector('.hero').classList.add('collapsed');
@@ -1992,29 +2008,48 @@
             }, 1000);
         }
 
-        // Video control buttons
-        let isMuted = false;
+        // Vimeo Player API
+        let vimeoPlayer = null;
+        let isMuted = true; // Start muted for autoplay
+        
+        function initVimeoPlayer() {
+            const iframe = document.getElementById('vimeoPlayer');
+            if (iframe && window.Vimeo) {
+                vimeoPlayer = new Vimeo.Player(iframe);
+                
+                // Update time display
+                vimeoPlayer.on('timeupdate', function(data) {
+                    const mins = Math.floor(data.seconds / 60).toString().padStart(2, '0');
+                    const secs = Math.floor(data.seconds % 60).toString().padStart(2, '0');
+                    if (timeDisplay) timeDisplay.textContent = mins + ':' + secs;
+                });
+            }
+        }
+        
         const soundBtn = document.getElementById('soundBtn');
         const timeDisplay = document.getElementById('timeDisplay');
 
         if (soundBtn) {
             soundBtn.addEventListener('click', () => {
                 isMuted = !isMuted;
-                soundBtn.textContent = isMuted ? '🔇 Muet' : '🔊 Son';
-                // Note: Vimeo iframe needs postMessage API for actual control
+                soundBtn.textContent = isMuted ? '🔇 Activer le son' : '🔊 Couper le son';
+                
+                // Control Vimeo sound
+                if (vimeoPlayer) {
+                    vimeoPlayer.setMuted(isMuted);
+                    if (!isMuted) {
+                        vimeoPlayer.setVolume(1);
+                    }
+                } else {
+                    // Fallback: postMessage API
+                    const iframe = document.getElementById('vimeoPlayer');
+                    if (iframe) {
+                        const data = { method: 'setVolume', value: isMuted ? 0 : 1 };
+                        iframe.contentWindow.postMessage(JSON.stringify(data), '*');
+                    }
+                }
             });
         }
-
-        // Update time display (simulated - real implementation needs Vimeo API)
-        let videoTime = 0;
-        setInterval(() => {
-            if (document.getElementById('vimeoPlayer')) {
-                videoTime++;
-                const mins = Math.floor(videoTime / 60).toString().padStart(2, '0');
-                const secs = (videoTime % 60).toString().padStart(2, '0');
-                if (timeDisplay) timeDisplay.textContent = mins + ':' + secs;
-            }
-        }, 1000);
 
         // Track events for Meta Pixel
         function trackEvent(eventName, data = {}) {

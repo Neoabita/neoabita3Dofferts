@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -26,15 +26,15 @@ export default async function handler(req, res) {
     
     // Gérer le +33 ou 0033 déjà présent
     if (cleaned.startsWith('+33')) {
-      formattedPhone = cleaned; // Déjà bon
+      formattedPhone = cleaned;
     } else if (cleaned.startsWith('0033')) {
-      formattedPhone = '+33' + cleaned.substring(4); // 0033612... -> +33612...
+      formattedPhone = '+33' + cleaned.substring(4);
     } else if (cleaned.startsWith('33') && cleaned.length === 11) {
-      formattedPhone = '+' + cleaned; // 33612... -> +33612...
+      formattedPhone = '+' + cleaned;
     } else if (cleaned.startsWith('0') && cleaned.length === 10) {
-      formattedPhone = '+33' + cleaned.substring(1); // 0612... -> +33612...
+      formattedPhone = '+33' + cleaned.substring(1);
     } else if (cleaned.length === 9 && !cleaned.startsWith('0')) {
-      formattedPhone = '+33' + cleaned; // 612345678 -> +33612345678
+      formattedPhone = '+33' + cleaned;
     } else if (cleaned.length > 0) {
       formattedPhone = cleaned.startsWith('+') ? cleaned : '+' + cleaned;
     }
@@ -44,74 +44,42 @@ export default async function handler(req, res) {
   const listId = 67;
 
   try {
-    // Vérifier si le contact existe déjà
-    const checkResponse = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
-      method: 'GET',
+    // Créer ou mettre à jour le contact
+    const response = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
       headers: {
         'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json',
         'Accept': 'application/json'
-      }
+      },
+      body: JSON.stringify({
+        email: email,
+        attributes: {
+          FIRSTNAME: firstName || '',
+          LASTNAME: lastName || '',
+          SMS: formattedPhone,
+          SOURCE: source || 'neoabita-plans-3d'
+        },
+        listIds: [listId],
+        updateEnabled: true
+      })
     });
 
-    if (checkResponse.ok) {
-      // Contact existe - on le met à jour et on l'ajoute à la liste
-      const updateResponse = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
-        method: 'PUT',
-        headers: {
-          'api-key': process.env.BREVO_API_KEY,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          attributes: {
-            FIRSTNAME: firstName || '',
-            LASTNAME: lastName || '',
-            SMS: formattedPhone,
-            SOURCE: source || 'neoabita-plans-3d'
-          },
-          listIds: [listId]
-        })
-      });
-
-      if (!updateResponse.ok) {
-        const errorData = await updateResponse.text();
-        console.error('Brevo update error:', errorData);
-        return res.status(500).json({ error: 'Erreur mise à jour Brevo', details: errorData });
-      }
-
-      return res.status(200).json({ success: true, message: 'Contact mis à jour', email });
-    } else {
-      // Nouveau contact - on le crée
-      const createResponse = await fetch('https://api.brevo.com/v3/contacts', {
-        method: 'POST',
-        headers: {
-          'api-key': process.env.BREVO_API_KEY,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          attributes: {
-            FIRSTNAME: firstName || '',
-            LASTNAME: lastName || '',
-            SMS: formattedPhone,
-            SOURCE: source || 'neoabita-plans-3d'
-          },
-          listIds: [listId],
-          updateEnabled: true
-        })
-      });
-
-      if (!createResponse.ok) {
-        const errorData = await createResponse.text();
-        console.error('Brevo create error:', errorData);
-        return res.status(500).json({ error: 'Erreur création Brevo', details: errorData });
-      }
-
+    if (response.ok || response.status === 201) {
       return res.status(200).json({ success: true, message: 'Contact créé', email });
     }
+
+    // Si le contact existe déjà (204), c'est OK
+    if (response.status === 204) {
+      return res.status(200).json({ success: true, message: 'Contact mis à jour', email });
+    }
+
+    const errorData = await response.text();
+    console.error('Brevo error:', response.status, errorData);
+    return res.status(500).json({ error: 'Erreur Brevo', details: errorData });
+
   } catch (error) {
     console.error('Server error:', error);
     return res.status(500).json({ error: 'Erreur serveur', details: error.message });
   }
-}
+};

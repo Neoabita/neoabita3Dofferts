@@ -141,6 +141,31 @@
             animation: pulse 2s ease-in-out infinite;
         }
 
+        .header-timer {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .timer-display {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--color-coral);
+            background: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 8px;
+            min-width: 70px;
+            text-align: center;
+        }
+
+        .timer-label {
+            font-size: 0.7rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.6; transform: scale(1.3); }
@@ -160,11 +185,22 @@
 
         .hero.collapsed {
             min-height: auto;
-            padding: 1rem 2rem;
+            padding: 6rem 2rem 1rem;
         }
 
         .hero.collapsed .hero-content {
+            margin-bottom: 1rem;
+        }
+
+        .hero.collapsed .hero-eyebrow,
+        .hero.collapsed .hero-subtitle,
+        .hero.collapsed .trust-bar {
             display: none;
+        }
+
+        .hero.collapsed .hero-title {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            margin-bottom: 0;
         }
 
         .hero.collapsed .cta-section {
@@ -202,36 +238,53 @@
 
         .video-control-btn {
             position: absolute;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             color: white;
             border: none;
             border-radius: 8px;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.75rem;
-            font-weight: 500;
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
             pointer-events: auto;
             transition: all 0.2s ease;
             font-family: var(--font-body);
+            backdrop-filter: blur(4px);
         }
 
         .video-control-btn:hover {
             background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
         }
 
         .video-control-sound {
-            bottom: 15px;
-            left: 15px;
-        }
-
-        .video-control-speed {
-            bottom: 15px;
-            left: 80px;
+            bottom: 20px;
+            left: 20px;
         }
 
         .video-control-time {
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
+            background: rgba(232, 115, 74, 0.9);
+            font-family: 'SF Mono', Monaco, monospace;
+        }
+
+        @media (max-width: 768px) {
+            .video-control-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.7rem;
+            }
+            
+            .video-control-sound {
+                bottom: 10px;
+                left: 10px;
+            }
+            
+            .video-control-time {
+                top: 10px;
+                right: 10px;
+            }
+        }
             background: rgba(232, 115, 74, 0.9);
         }
 
@@ -918,7 +971,11 @@
             }
 
             .booking-widget {
-                min-height: 680px;
+                min-height: 750px;
+                padding: 0.75rem;
+                margin: 0 -1rem;
+                width: calc(100% + 2rem);
+                border-radius: 12px;
             }
 
             .gallery-grid {
@@ -933,6 +990,21 @@
             .gallery-grid-2 {
                 grid-template-columns: 1fr;
                 max-width: 500px;
+            }
+
+            .header-timer {
+                gap: 0.5rem;
+            }
+
+            .timer-display {
+                font-size: 0.85rem;
+                padding: 0.3rem 0.5rem;
+                min-width: 55px;
+            }
+
+            .header-badge {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.65rem;
             }
         }
 
@@ -964,10 +1036,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 3rem 2rem;
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s var(--transition-smooth);
+            overflow-y: auto;
         }
 
         .modal-overlay.active {
@@ -985,10 +1058,27 @@
             box-shadow: var(--shadow-large);
             transform: scale(0.95) translateY(20px);
             transition: transform 0.4s var(--transition-smooth);
+            margin: auto;
+            max-height: calc(100vh - 6rem);
+            overflow-y: auto;
         }
 
         .modal-overlay.active .modal {
             transform: scale(1) translateY(0);
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--color-border);
+            border-top-color: var(--color-coral);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1.5rem auto 0;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .modal-close {
@@ -1352,8 +1442,14 @@
         <div class="logo">
             <img src="logo.png" alt="Neoabita">
         </div>
-        <div class="header-badge">
-            Offre Limitée
+        <div class="header-timer">
+            <div class="header-badge">
+                Offre Limitée
+            </div>
+            <div>
+                <div class="timer-display" id="countdownTimer">10:00</div>
+                <div class="timer-label">Temps restant</div>
+            </div>
         </div>
     </header>
 
@@ -1406,7 +1502,6 @@
             <!-- Video Controls Overlay -->
             <div class="video-controls-overlay" id="videoControlsOverlay">
                 <button class="video-control-btn video-control-sound" id="soundBtn">🔊 Son</button>
-                <button class="video-control-btn video-control-speed" id="speedBtn">1x</button>
                 <span class="video-control-btn video-control-time" id="timeDisplay">00:00</span>
             </div>
         </div>
@@ -1441,7 +1536,8 @@
         <div class="about-content">
             <p class="about-intro">
                 Nous sommes <strong>constructeur et maître d'œuvre spécialisé dans les villas haut de gamme</strong>, 
-                reconnu pour notre capacité à concrétiser les visions les plus ambitieuses.
+                reconnu pour notre capacité à concrétiser les visions les plus ambitieuses.<br>
+                <strong style="color: var(--color-coral);">Budgets maison hors terrain : 1 à 20 millions d'euros.</strong>
             </p>
 
             <div class="about-grid">
@@ -1511,7 +1607,7 @@
             <div class="timeline-step timeline-step-final">
                 <div class="timeline-icon">📋</div>
                 <div class="timeline-content">
-                    <span class="timeline-badge timeline-badge-success">Étape 4 — Semaine 4</span>
+                    <span class="timeline-badge timeline-badge-success">Étape 4 — sous 1 semaine</span>
                     <h3 class="timeline-title">Chiffrage de votre projet</h3>
                     <p class="timeline-text">Recevez un dossier de plans complet de 60 pages avec le chiffrage précis de votre villa de rêve.</p>
                 </div>
@@ -1534,7 +1630,7 @@
             <div class="decorative-line"></div>
             <div class="urgency-badge">
                 <span class="urgency-icon">🔥</span>
-                <span>Places limitées — Offre réservée aux projets sérieux</span>
+                <span>20 projets maximum par an — Offre réservée aux projets sérieux</span>
             </div>
         </div>
 
@@ -1701,7 +1797,7 @@
                     </button>
                 </form>
 
-                <div class="form-divider">ou contactez-nous directement</div>
+                <div class="form-divider">Vous avez un projet de construction ou rénovation et souhaitez être accompagné ?</div>
 
                 <div class="cta-buttons">
                     <a href="https://wa.me/33658458449?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
@@ -1736,30 +1832,36 @@
                 <h2 class="success-title">C'est parti ! 🎉</h2>
                 <p class="success-text">
                     Merci pour votre intérêt !<br>
-                    La vidéo va se lancer automatiquement.
+                    La vidéo va se charger automatiquement...
                 </p>
-                <div class="cta-buttons">
-                    <a href="https://wa.me/33658458449?text=Bonjour%2C%20je%20viens%20de%20regarder%20votre%20vid%C3%A9o%20et%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                        </svg>
-                        Échanger sur WhatsApp
-                    </a>
-                    <a href="#reserver-appel" class="cta-btn cta-btn-call" id="bookCallBtnSuccess" onclick="closeModal()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="16" y1="2" x2="16" y2="6"></line>
-                            <line x1="8" y1="2" x2="8" y2="6"></line>
-                            <line x1="3" y1="10" x2="21" y2="10"></line>
-                        </svg>
-                        Réserver un Appel
-                    </a>
-                </div>
+                <div class="loading-spinner"></div>
             </div>
         </div>
     </div>
 
     <script>
+        // Countdown Timer 10 minutes
+        const countdownTimer = document.getElementById('countdownTimer');
+        let timeLeft = 10 * 60; // 10 minutes in seconds
+        
+        function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownTimer.textContent = 
+                String(minutes).padStart(2, '0') + ':' + 
+                String(seconds).padStart(2, '0');
+            
+            if (timeLeft > 0) {
+                timeLeft--;
+            } else {
+                countdownTimer.textContent = '00:00';
+                countdownTimer.style.color = '#dc2626';
+            }
+        }
+        
+        updateCountdown(); // Initial display
+        setInterval(updateCountdown, 1000);
+
         // Elements
         const playButton = document.getElementById('playButton');
         const modalOverlay = document.getElementById('modalOverlay');
@@ -1892,27 +1994,13 @@
 
         // Video control buttons
         let isMuted = false;
-        let currentSpeed = 1;
-        const speeds = [1, 1.25, 1.5, 2, 0.5, 0.75];
-        let speedIndex = 0;
-
         const soundBtn = document.getElementById('soundBtn');
-        const speedBtn = document.getElementById('speedBtn');
         const timeDisplay = document.getElementById('timeDisplay');
 
         if (soundBtn) {
             soundBtn.addEventListener('click', () => {
                 isMuted = !isMuted;
                 soundBtn.textContent = isMuted ? '🔇 Muet' : '🔊 Son';
-                // Note: Vimeo iframe needs postMessage API for actual control
-            });
-        }
-
-        if (speedBtn) {
-            speedBtn.addEventListener('click', () => {
-                speedIndex = (speedIndex + 1) % speeds.length;
-                currentSpeed = speeds[speedIndex];
-                speedBtn.textContent = currentSpeed + 'x';
                 // Note: Vimeo iframe needs postMessage API for actual control
             });
         }

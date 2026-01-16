@@ -155,6 +155,84 @@
             justify-content: center;
             padding: 7rem 2rem 4rem;
             position: relative;
+            transition: all 0.8s ease-out;
+        }
+
+        .hero.collapsed {
+            min-height: auto;
+            padding: 1rem 2rem;
+        }
+
+        .hero.collapsed .hero-content {
+            display: none;
+        }
+
+        .hero.collapsed .cta-section {
+            display: none;
+        }
+
+        /* Video CTA Buttons (shown after form submission) */
+        .video-cta-buttons {
+            display: none;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .video-cta-buttons.visible {
+            display: flex;
+        }
+
+        /* Video Controls Overlay */
+        .video-controls-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 10;
+            display: none;
+        }
+
+        .video-controls-overlay.visible {
+            display: block;
+        }
+
+        .video-control-btn {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.2s ease;
+            font-family: var(--font-body);
+        }
+
+        .video-control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .video-control-sound {
+            bottom: 15px;
+            left: 15px;
+        }
+
+        .video-control-speed {
+            bottom: 15px;
+            left: 80px;
+        }
+
+        .video-control-time {
+            top: 15px;
+            right: 15px;
+            background: rgba(232, 115, 74, 0.9);
         }
 
         .hero-content {
@@ -281,7 +359,8 @@
         .video-thumbnail {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            background: #1a1a1a;
             transition: transform 0.6s var(--transition-smooth);
         }
 
@@ -601,6 +680,14 @@
             gap: 1.25rem;
         }
 
+        .gallery-grid-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            max-width: 66.67%;
+            margin: 1.25rem auto 0;
+        }
+
         .gallery-grid-2 {
             grid-template-columns: repeat(2, 1fr);
             max-width: 800px;
@@ -805,11 +892,19 @@
             border-radius: 20px;
             padding: 1.5rem;
             min-height: 650px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
         }
 
         .booking-widget .iclosed-widget {
             border-radius: 12px;
             overflow: hidden;
+        }
+
+        .booking-widget iframe {
+            width: 100% !important;
+            max-width: 100% !important;
         }
 
         /* Responsive */
@@ -828,6 +923,11 @@
 
             .gallery-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .gallery-grid-bottom {
+                grid-template-columns: repeat(2, 1fr);
+                max-width: 100%;
             }
 
             .gallery-grid-2 {
@@ -1085,6 +1185,18 @@
             transform: translateY(-2px);
         }
 
+        .cta-btn-primary {
+            background: var(--color-coral);
+            border: 1.5px solid var(--color-coral);
+            color: white;
+        }
+
+        .cta-btn-primary:hover {
+            background: var(--color-coral-dark);
+            border-color: var(--color-coral-dark);
+            transform: translateY(-2px);
+        }
+
         .cta-btn svg {
             width: 18px;
             height: 18px;
@@ -1290,6 +1402,25 @@
                 <span class="play-text">🔊 Voir la présentation</span>
             </button>
             <div class="video-iframe-container" id="videoContainer"></div>
+            
+            <!-- Video Controls Overlay -->
+            <div class="video-controls-overlay" id="videoControlsOverlay">
+                <button class="video-control-btn video-control-sound" id="soundBtn">🔊 Son</button>
+                <button class="video-control-btn video-control-speed" id="speedBtn">1x</button>
+                <span class="video-control-btn video-control-time" id="timeDisplay">00:00</span>
+            </div>
+        </div>
+
+        <!-- CTA Buttons (shown after form submission) -->
+        <div class="video-cta-buttons" id="videoCTAButtons">
+            <a href="https://wa.me/33658458449?text=Bonjour%2C%20je%20viens%20de%20regarder%20votre%20vid%C3%A9o%20et%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
+                <span class="cta-icon">💬</span>
+                WhatsApp
+            </a>
+            <a href="#reserver-appel" class="cta-btn cta-btn-primary">
+                <span class="cta-icon">📅</span>
+                Réserver un appel
+            </a>
         </div>
 
         <div class="cta-section">
@@ -1366,12 +1497,23 @@
 
             <div class="timeline-connector"></div>
 
-            <div class="timeline-step timeline-step-final">
+            <div class="timeline-step">
                 <div class="timeline-icon">🏡</div>
                 <div class="timeline-content">
-                    <span class="timeline-badge timeline-badge-success">Résultat — sous 3 jours</span>
+                    <span class="timeline-badge">Étape 3 — sous 3 jours</span>
                     <h3 class="timeline-title">Vos plans 3D offerts !</h3>
                     <p class="timeline-text">Visualisez votre future villa de rêve avec des rendus photoréalistes.</p>
+                </div>
+            </div>
+
+            <div class="timeline-connector"></div>
+
+            <div class="timeline-step timeline-step-final">
+                <div class="timeline-icon">📋</div>
+                <div class="timeline-content">
+                    <span class="timeline-badge timeline-badge-success">Étape 4 — Semaine 4</span>
+                    <h3 class="timeline-title">Chiffrage de votre projet</h3>
+                    <p class="timeline-text">Recevez un dossier de plans complet de 60 pages avec le chiffrage précis de votre villa de rêve.</p>
                 </div>
             </div>
         </div>
@@ -1463,6 +1605,8 @@
             <div class="gallery-item">
                 <img src="realisation-3.jpg" alt="Villa moderne avec piscine et terrasse couverte">
             </div>
+        </div>
+        <div class="gallery-grid-bottom">
             <div class="gallery-item">
                 <img src="realisation-4.jpg" alt="Villa design blanc et bois avec bassin">
             </div>
@@ -1560,7 +1704,7 @@
                 <div class="form-divider">ou contactez-nous directement</div>
 
                 <div class="cta-buttons">
-                    <a href="https://wa.me/33XXXXXXXXX?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
+                    <a href="https://wa.me/33658458449?text=Bonjour%2C%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                         </svg>
@@ -1595,7 +1739,7 @@
                     La vidéo va se lancer automatiquement.
                 </p>
                 <div class="cta-buttons">
-                    <a href="https://wa.me/33XXXXXXXXX?text=Bonjour%2C%20je%20viens%20de%20regarder%20votre%20vid%C3%A9o%20et%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
+                    <a href="https://wa.me/33658458449?text=Bonjour%2C%20je%20viens%20de%20regarder%20votre%20vid%C3%A9o%20et%20je%20souhaite%20en%20savoir%20plus%20sur%20l%27offre%20Plans%203D%20Offerts" class="cta-btn cta-btn-whatsapp" target="_blank">
                         <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                         </svg>
@@ -1721,15 +1865,68 @@
             
             videoContainer.innerHTML = `
                 <iframe 
+                    id="vimeoPlayer"
                     src="https://player.vimeo.com/video/${VIMEO_VIDEO_ID}?autoplay=1&title=0&byline=0&portrait=0" 
                     frameborder="0" 
                     allow="autoplay; fullscreen; picture-in-picture" 
-                    allowfullscreen>
+                    allowfullscreen
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;">
                 </iframe>
             `;
             videoContainer.classList.add('active');
             trackEvent('video_start');
+            
+            // Show video controls overlay
+            document.getElementById('videoControlsOverlay').classList.add('visible');
+            
+            // Show CTA buttons under video
+            document.getElementById('videoCTAButtons').classList.add('visible');
+            
+            // Collapse hero after 1 second
+            setTimeout(() => {
+                document.querySelector('.hero').classList.add('collapsed');
+                // Scroll to video smoothly
+                document.querySelector('.video-container').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 1000);
         }
+
+        // Video control buttons
+        let isMuted = false;
+        let currentSpeed = 1;
+        const speeds = [1, 1.25, 1.5, 2, 0.5, 0.75];
+        let speedIndex = 0;
+
+        const soundBtn = document.getElementById('soundBtn');
+        const speedBtn = document.getElementById('speedBtn');
+        const timeDisplay = document.getElementById('timeDisplay');
+
+        if (soundBtn) {
+            soundBtn.addEventListener('click', () => {
+                isMuted = !isMuted;
+                soundBtn.textContent = isMuted ? '🔇 Muet' : '🔊 Son';
+                // Note: Vimeo iframe needs postMessage API for actual control
+            });
+        }
+
+        if (speedBtn) {
+            speedBtn.addEventListener('click', () => {
+                speedIndex = (speedIndex + 1) % speeds.length;
+                currentSpeed = speeds[speedIndex];
+                speedBtn.textContent = currentSpeed + 'x';
+                // Note: Vimeo iframe needs postMessage API for actual control
+            });
+        }
+
+        // Update time display (simulated - real implementation needs Vimeo API)
+        let videoTime = 0;
+        setInterval(() => {
+            if (document.getElementById('vimeoPlayer')) {
+                videoTime++;
+                const mins = Math.floor(videoTime / 60).toString().padStart(2, '0');
+                const secs = (videoTime % 60).toString().padStart(2, '0');
+                if (timeDisplay) timeDisplay.textContent = mins + ':' + secs;
+            }
+        }, 1000);
 
         // Track events for Meta Pixel
         function trackEvent(eventName, data = {}) {

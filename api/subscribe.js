@@ -55,8 +55,8 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         email: email,
         attributes: {
-          FIRSTNAME: firstName || '',
-          LASTNAME: lastName || '',
+          PRENOM: firstName || '',
+          NOM: lastName || '',
           SMS: formattedPhone,
           SOURCE: source || 'neoabita-plans-3d'
         },

@@ -395,16 +395,14 @@
             pointer-events: none;
         }
 
-        .video-thumbnail {
+        .video-thumbnail-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            background: #1a1a1a;
-            transition: transform 0.6s var(--transition-smooth);
-        }
-
-        .video-container:hover .video-thumbnail {
-            transform: scale(1.03);
+            border: none;
+            pointer-events: none;
         }
 
         .video-overlay-gradient {
@@ -721,9 +719,9 @@
 
         .gallery-grid-bottom {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.25rem;
-            max-width: 66.67%;
+            max-width: 100%;
             margin: 1.25rem auto 0;
         }
 
@@ -847,30 +845,30 @@
 
         /* Booking Section */
         .booking-content {
-            max-width: 1100px;
+            max-width: 800px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 3rem;
-            align-items: start;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
 
         .booking-expert {
             background: var(--color-bg-card);
             border: 1px solid var(--color-border);
             border-radius: 20px;
-            padding: 2rem;
-            position: sticky;
-            top: 100px;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .expert-image {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
+            min-width: 100px;
             border-radius: 50%;
             overflow: hidden;
-            margin: 0 auto 1.5rem;
-            border: 4px solid var(--color-coral);
+            border: 3px solid var(--color-coral);
             box-shadow: 0 8px 25px rgba(232, 115, 74, 0.2);
         }
 
@@ -881,44 +879,48 @@
         }
 
         .expert-info {
-            text-align: center;
+            text-align: left;
         }
 
         .expert-name {
             font-family: var(--font-display);
-            font-size: 1.35rem;
+            font-size: 1.25rem;
             font-weight: 600;
             color: var(--color-text);
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.2rem;
         }
 
         .expert-role {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--color-coral);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.75rem;
         }
 
         .expert-description {
             color: var(--color-text-soft);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-            text-align: left;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 0;
+            display: none;
         }
 
         .expert-benefits {
             list-style: none;
-            text-align: left;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .expert-benefits li {
             color: var(--color-text-soft);
-            font-size: 0.9rem;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--color-border);
+            font-size: 0.8rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--color-bg-warm);
+            border-radius: 20px;
+            border: none;
         }
 
         .expert-benefits li:last-child {
@@ -958,27 +960,27 @@
             .booking-widget .iclosed-widget {
                 min-height: 680px;
             }
-            
-            .booking-content {
-                gap: 2rem;
-            }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .booking-content {
-                grid-template-columns: 1fr;
-            }
-
             .booking-expert {
-                position: static;
+                flex-direction: column;
+                text-align: center;
+                padding: 1.25rem;
+            }
+            
+            .expert-info {
+                text-align: center;
+            }
+            
+            .expert-benefits {
+                justify-content: center;
             }
 
             .booking-widget {
                 min-height: 750px;
-                padding: 0.75rem;
-                margin: 0 -1rem;
-                width: calc(100% + 2rem);
+                padding: 0.5rem;
                 border-radius: 12px;
             }
 
@@ -987,25 +989,13 @@
             }
 
             .gallery-grid-bottom {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 max-width: 100%;
             }
 
             .gallery-grid-2 {
                 grid-template-columns: 1fr;
                 max-width: 500px;
-            }
-
-            .header-badge {
-                padding: 0.4rem 1rem;
-            }
-            
-            .header-badge-top {
-                font-size: 0.6rem;
-            }
-            
-            .header-badge-timer {
-                font-size: 0.95rem;
             }
         }
 
@@ -1357,33 +1347,42 @@
             }
 
             .header-badge {
-                padding: 0.35rem 0.75rem;
+                padding: 0.35rem 0.6rem;
             }
             
             .header-badge-top {
-                font-size: 0.55rem;
-                gap: 0.3rem;
+                font-size: 0.5rem;
+                gap: 0.25rem;
             }
             
             .header-badge-top::before {
-                width: 5px;
-                height: 5px;
+                width: 4px;
+                height: 4px;
             }
             
             .header-badge-timer {
-                font-size: 0.85rem;
+                font-size: 0.75rem;
             }
 
             .logo img {
-                height: 35px;
+                height: 32px;
             }
 
             .hero {
-                padding: 6rem 1.25rem 3rem;
+                padding: 5.5rem 1rem 2.5rem;
             }
 
             .section {
-                padding: 3.5rem 1.25rem;
+                padding: 3rem 1rem;
+            }
+            
+            .hero-content,
+            .section-header,
+            .about-content,
+            .process-cta,
+            .testimonials-grid,
+            .booking-content {
+                padding: 0 0.5rem;
             }
 
             .play-button {
@@ -1426,10 +1425,6 @@
 
             .timeline-connector {
                 margin-left: 22px;
-            }
-
-            .booking-content {
-                grid-template-columns: repeat(2, 1fr);
             }
 
             .modal {
@@ -1499,11 +1494,13 @@
 
         <!-- Video Container -->
         <div class="video-container">
-            <img 
-                src="hero-thumbnail.png" 
-                alt="Plans 3D Ultra-Réalistes Neoabita" 
-                class="video-thumbnail"
-            >
+            <iframe 
+                id="vimeoThumbnail"
+                src="https://player.vimeo.com/video/1139569851?background=1&muted=1&loop=1&autopause=0" 
+                frameborder="0" 
+                allow="autoplay"
+                class="video-thumbnail-iframe"
+            ></iframe>
             <div class="video-overlay-gradient"></div>
             <button class="play-button" id="playButton" aria-label="Voir la vidéo">
                 <span class="play-icon"></span>
@@ -1549,7 +1546,7 @@
             <p class="about-intro">
                 Nous sommes <strong>constructeur et maître d'œuvre spécialisé dans les villas haut de gamme</strong>, 
                 reconnu pour notre capacité à concrétiser les visions les plus ambitieuses.<br>
-                <strong style="color: var(--color-coral);">Budgets maison hors terrain : 1 à 20 millions d'euros.</strong>
+                <span style="font-size: 0.8rem; color: var(--color-text-muted);">*Budgets maison hors terrain : 1 à 20 millions d'euros.</span>
             </p>
 
             <div class="about-grid">
@@ -1721,6 +1718,9 @@
             <div class="gallery-item">
                 <img src="realisation-5.jpg" alt="Villa haut de gamme avec piscine à débordement">
             </div>
+            <div class="gallery-item">
+                <img src="realisation-6.jpg" alt="Intérieur villa luxe - salon cuisine ouverte avec charpente bois">
+            </div>
         </div>
     </section>
 
@@ -1778,7 +1778,6 @@
             <!-- Form State -->
             <div class="modal-form" id="modalForm">
                 <div class="modal-header">
-                    <div class="modal-icon">🏠</div>
                     <h2 class="modal-title">Accédez à la Vidéo</h2>
                     <p class="modal-subtitle">
                         Découvrez comment obtenir vos plans 3D ultra-réalistes offerts
@@ -1882,7 +1881,7 @@
         const modalSuccess = document.getElementById('modalSuccess');
         const leadForm = document.getElementById('leadForm');
         const videoContainer = document.getElementById('videoContainer');
-        const videoThumbnail = document.querySelector('.video-thumbnail');
+        const videoThumbnailIframe = document.getElementById('vimeoThumbnail');
 
         // Vimeo Video ID
         const VIMEO_VIDEO_ID = '1139569851';
@@ -1974,7 +1973,7 @@
         // Start video function
         function startVideo() {
             playButton.style.display = 'none';
-            videoThumbnail.style.display = 'none';
+            if (videoThumbnailIframe) videoThumbnailIframe.style.display = 'none';
             document.querySelector('.video-overlay-gradient').style.display = 'none';
             
             // Vimeo avec loop, sans contrôles, muted pour autoplay
